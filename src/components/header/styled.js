@@ -4,12 +4,30 @@ export const HeaderContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: #003;
+    font-size: 20px;
+    a {
+        text-decoration: none;
+        color: #ffffff;
+    }
     ul {
         list-style: none;
         li {
             display: inline-block;
             a {
-                text-decoration: none;
+                padding: 8px;
+                margin-right: 10px;
+            }
+            a:link {
+                border-style: none;
+            }
+            a:visted {
+                border-style: solid;
+                border-color: #ffffff;
+            }
+            a:hover {
+                background-color: #ffffff;
+                color: #0f223d;
             }
         }
     }
