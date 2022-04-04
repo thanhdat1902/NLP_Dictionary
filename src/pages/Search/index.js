@@ -1,9 +1,14 @@
-import React from 'react';
+import React from "react";
+import Header from "../../components/header";
+import Footer from "../../components/footer";
+import SearchForm from "../../components/searchform"
 
 const SearchPage = (props) => {
     return (
         <div>
-            Search Page
+            <Header></Header>
+            <SearchForm></SearchForm>
+            <Footer></Footer>
         </div>
     );
 }

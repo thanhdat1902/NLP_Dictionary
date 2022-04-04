@@ -6,8 +6,8 @@ const Header = () => {
             <a href="#abc">PARACOR</a>
             <nav>
                 <ul>
-                    <li><a href="#abc">Home</a></li>
-                    <li><a href="#abc">Search</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/search">Search</a></li>
                     <li><a href="#abc">Statistics</a></li>
                     <li><a href="#abc">Term</a></li>
                     <li><a href="#abc">Help</a></li>

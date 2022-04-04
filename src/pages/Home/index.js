@@ -6,7 +6,6 @@ const HomePage = (props) => {
     return (
         <div>
             <Header></Header>
-            Home
             <StickyHeadTable></StickyHeadTable>
             <Footer></Footer>
         </div>
