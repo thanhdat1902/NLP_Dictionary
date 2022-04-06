@@ -6,6 +6,7 @@ export const HeaderContainer = styled.div`
     align-items: center;
     background-color: #003;
     font-size: 20px;
+    padding: 30px;
     a {
         text-decoration: none;
         color: #ffffff;
@@ -17,6 +18,7 @@ export const HeaderContainer = styled.div`
             a {
                 padding: 8px;
                 margin-right: 10px;
+                transition: all .5s;
             }
             a:link {
                 border-style: none;

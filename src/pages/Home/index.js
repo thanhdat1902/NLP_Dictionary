@@ -1,12 +1,12 @@
 import React from 'react';
 import Header from "../../components/header";
-import StickyHeadTable from '../Table';
+import StickyHeadTable from '../../components/Table';
 import Footer from "../../components/footer";
-const HomePage = (props) => {
+const HomePage = ({rowsEN, rowsVN}) => {
     return (
         <div>
             <Header></Header>
-            <StickyHeadTable></StickyHeadTable>
+            <StickyHeadTable rowsVN={rowsVN} rowsEN={rowsEN}></StickyHeadTable>
             <Footer></Footer>
         </div>
     );
