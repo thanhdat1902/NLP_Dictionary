@@ -16,14 +16,13 @@ const SearchPage = ({rowsEN, rowsVN}) => {
             return;
         }
         if(searchType === 'match') {
-            const searchList = await DataUtils.searchByMatch(language, keyword, rowsVN,rowsEN);
-            console.log(searchList);
+            const searchList = await DataUtils.searchByMatch(language, keyword, rowsVN, rowsEN);
             setTypeSearch('Match');
             setRowsSrc(searchList.Src);
             setRowsTar(searchList.Tar);
 
         } else {
-            const searchList = await DataUtils.searchByPhrase(language, keyword, rowsVN,rowsEN);
+            const searchList = await DataUtils.searchByPhrase(language, keyword, rowsVN, rowsEN);
             setTypeSearch('Phrase');
             setRowsSrc(searchList.Src);
             setRowsTar(searchList.Tar);
