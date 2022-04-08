@@ -118,9 +118,6 @@ const handlePhraseSourceArr = (sourceArr, sentenceId, arrayWordsFromPhrase) => {
     }
 }
 const handlePhraseTargetArr = (targetArr, sentenceId, listMatchItems) => {
-    console.log(targetArr)
-    console.log(sentenceId)
-    console.log(listMatchItems)
     let minPos = 100;
     let maxPos = -1;
     let left = "";
@@ -130,7 +127,6 @@ const handlePhraseTargetArr = (targetArr, sentenceId, listMatchItems) => {
         if (s.id === sentenceId) {
             for (let item of listMatchItems) {
                 let indexes = item.offset.split(',');
-                // console.log(indexes)
                 for (let index of indexes) {
                     if (index !== "-") {
                         if (parseInt(index) > parseInt(maxPos)) {
@@ -139,16 +135,10 @@ const handlePhraseTargetArr = (targetArr, sentenceId, listMatchItems) => {
                         if (parseInt(index) < parseInt(minPos)) {
                             minPos = index;
                         }
-                        // console.log("index: " + index)
-                        // console.log("maxPos: " + maxPos)
-                        // console.log("minPos: " + minPos)
                     }
                 }
             }
-            // console.log(minPos)
-            // console.log(maxPos)
             if (minPos === 100 && maxPos === -1) {
-                //if no phrase in target language match
                 right += s.sentence;
             } else {
                 let arraySentence = s.sentence.split(' ');
@@ -278,7 +268,6 @@ const DataUtils = () => {
                 // check if phrase input matches with phrase in sentence.
                 const listMatchItems = [];
                 if (item.word.toLowerCase() === arrayWordsFromPhrase[0]) {
-                    // console.log("Here")
                     listMatchItems.push(item);
                     const sentenceId = getSentenceOrder(item.id);
                     let index = 0;
@@ -286,26 +275,20 @@ const DataUtils = () => {
                         let nextItem = res.data[++tmp];
                         if (nextItem.word !== arrayWordsFromPhrase[++index] ||
                             getSentenceOrder(nextItem.id) !== sentenceId) {
-                            // console.log("Wrong phrase")
                             matchPhrase = false;
                             break;
                         } else {
                             listMatchItems.push(nextItem);
                         }
                     }
-                    // console.log(listMatchItems)
-                    // console.log(matchPhrase)
                 } else {
                     matchPhrase = false;
                 }
 
                 //if match
                 if (matchPhrase) {
-                    // console.log("Match")
                     let objectSrc = handlePhraseSourceArr(sourceArr, getSentenceOrder(item.id), arrayWordsFromPhrase);
-                    // console.log(objectSrc);
                     let objectTarget = handlePhraseTargetArr(targetArr, getSentenceOrder(item.id), listMatchItems);
-                    // console.log(objectTarget);
                     result.Src.push(objectSrc);
                     result.Tar.push(objectTarget);
                 }
