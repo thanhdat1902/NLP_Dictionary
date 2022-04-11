@@ -11,7 +11,7 @@ const Header = () => {
                     <li><a href="/statistics">Statistics</a></li>
                     <li><a href="#abc">Term</a></li>
                     <li><a href="#abc">Help</a></li>
-                    <li><a href="#abc">About</a></li>
+                    <li><a href="/about">About</a></li>
                 </ul>
             </nav>
         </HeaderContainer>

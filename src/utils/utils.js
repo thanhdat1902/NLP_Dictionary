@@ -14,7 +14,11 @@ const handleItemOff = (off) => {
     return [offArr[0]-1, offArr[offArr.length-1]-1];
 }
 
-const handleSourceArr = (sourceArr, sentenceId, item) => {
+const processPhrase = (phrase) => {
+    return phrase.toLowerCase().split(" ");
+}
+
+const handleMatchSourceArr = (sourceArr, sentenceId, item) => {
     for(let s of sourceArr) {
         if(s.id === sentenceId) {
             const wordSentence = s.sentence.split(" ");
@@ -41,7 +45,7 @@ const handleSourceArr = (sourceArr, sentenceId, item) => {
         }
     }
 }
-const handleTargetArr = (targetArr, sentenceId, item) => {
+const handleMatchTargetArr = (targetArr, sentenceId, item) => {
     const [min, max] = handleItemOff(item.offset);
     for(let s of targetArr) {
         const wordSentence = s.sentence.split(" ");
@@ -72,8 +76,92 @@ const handleTargetArr = (targetArr, sentenceId, item) => {
     }
 }
 
-
-
+const handlePhraseSourceArr = (sourceArr, sentenceId, arrayWordsFromPhrase) => {
+    const beginPhrase = arrayWordsFromPhrase[0];
+    const endPhrase = arrayWordsFromPhrase[arrayWordsFromPhrase.length-1];
+    for (let s of sourceArr) {
+        if (s.id === sentenceId) {
+            const wordSentence = s.sentence.split(" ");
+            let left = '';
+            let right = '';
+            let isLeft = true;
+            let isRight = false;
+            for (let i of wordSentence) {
+                if (i.toLowerCase() === beginPhrase && i.toLowerCase() !== endPhrase) {
+                    isLeft = false;
+                    continue;
+                } else if (i.toLowerCase() === beginPhrase && i.toLowerCase() === endPhrase) {
+                    isLeft = false;
+                    isRight = true;
+                    continue;
+                } else if (i.toLowerCase() === endPhrase) {
+                    isRight = true;
+                    continue;
+                }
+                if (isLeft) {
+                    left += i + " ";
+                }
+                if (isRight) {
+                    right += i + " ";
+                }
+            }
+            let keyReturn = "";
+            for (let word of arrayWordsFromPhrase) {
+                keyReturn += word + " ";
+            }
+            return {
+                left: left,
+                right: right,
+                key: keyReturn,
+                id: s.id
+            }
+        }
+    }
+}
+const handlePhraseTargetArr = (targetArr, sentenceId, listMatchItems) => {
+    let minPos = 100;
+    let maxPos = -1;
+    let left = "";
+    let right = "";
+    let key = "";
+    for (let s of targetArr) {
+        if (s.id === sentenceId) {
+            for (let item of listMatchItems) {
+                let indexes = item.offset.split(',');
+                for (let index of indexes) {
+                    if (index !== "-") {
+                        if (parseInt(index) > parseInt(maxPos)) {
+                            maxPos = index;
+                        }
+                        if (parseInt(index) < parseInt(minPos)) {
+                            minPos = index;
+                        }
+                    }
+                }
+            }
+            if (minPos === 100 && maxPos === -1) {
+                right += s.sentence;
+            } else {
+                let arraySentence = s.sentence.split(' ');
+                for (let i = 0; i < arraySentence.length; i++) {
+                    if (i < minPos-1) {
+                        left += arraySentence[i] + " ";
+                    } else if (i >= minPos - 1 && i <= maxPos - 1) {
+                        key += arraySentence[i] + " ";
+                    } else {
+                        right += arraySentence[i] + " ";
+                    }
+                }
+            }
+            return {
+                left: left,
+                right: right,
+                key: key,
+                id: s.id
+            }
+        }
+    }
+}
 const DataUtils = () => {
     const getListVNSentence = () => {
         return axios.get('data/vn.json')
@@ -129,10 +217,8 @@ const DataUtils = () => {
                     currentSentence = "";
                     currentSentence+= item.word;
                 }
-
             })
             return sentenceArray;
-
         })
         .catch(err => {
             console.log(err);
@@ -152,8 +238,8 @@ const DataUtils = () => {
             res.data.map(item => {
                 if(item.word === processWord(word) && item.id!==currentId) {
                     currentId = item.id;
-                    let objectSrc = handleSourceArr(sourceArr, getSentenceOrder(item.id), item);
-                    let objectTarget = handleTargetArr(targetArr, getSentenceOrder(item.id), item);
+                    let objectSrc = handleMatchSourceArr(sourceArr, getSentenceOrder(item.id), item);
+                    let objectTarget = handleMatchTargetArr(targetArr, getSentenceOrder(item.id), item);
                     result.Src.push(objectSrc);
                     result.Tar.push(objectTarget);
                 }
@@ -165,11 +251,55 @@ const DataUtils = () => {
     }
 
     const searchByPhrase = (currentLg, phrase, VNArr, ENArr ) => {
-        const dataFile = currentLg === "VN" ? "data/vn.json": "data/en.json";
+        const dataFile = currentLg === "VN" ? "data/vn.json" : "data/en.json";
+        const sourceArr = currentLg === "VN" ? VNArr : ENArr;
+        const targetArr = currentLg === "VN" ? ENArr : VNArr;
+        const result = {
+            Src: [],
+            Tar: []
+        };
         return axios.get(dataFile)
-        .then(res => {})
+        .then(res => {
+            const arrayWordsFromPhrase = processPhrase(phrase);
+            const phraseLength = arrayWordsFromPhrase.length;
+            for(let i = 0; i < res.data.length; i++) {
+                let tmp = i;
+                let item = res.data[tmp];
+                let matchPhrase = true;
+                // check if phrase input matches with phrase in sentence.
+                const listMatchItems = [];
+                if (item.word.toLowerCase() === arrayWordsFromPhrase[0]) {
+                    listMatchItems.push(item);
+                    const sentenceId = getSentenceOrder(item.id);
+                    let index = 0;
+                    while (index !== phraseLength - 1) {
+                        let nextItem = res.data[++tmp];
+                        if (nextItem.word !== arrayWordsFromPhrase[++index] ||
+                            getSentenceOrder(nextItem.id) !== sentenceId) {
+                            matchPhrase = false;
+                            break;
+                        } else {
+                            listMatchItems.push(nextItem);
+                        }
+                    }
+                } else {
+                    matchPhrase = false;
+                }
+
+                //if match
+                if (matchPhrase) {
+                    let objectSrc = handlePhraseSourceArr(sourceArr, getSentenceOrder(item.id), arrayWordsFromPhrase);
+                    let objectTarget = handlePhraseTargetArr(targetArr, getSentenceOrder(item.id), listMatchItems);
+                    result.Src.push(objectSrc);
+                    result.Tar.push(objectTarget);
+                }
+            }
+            return result;
+        })
+        // { Src: [{id, left,right,key}] , Tar:[{id, left,right,key}] }
         .catch(err => console.log(err));
     }
+
 
     const getStatsDict = (jsonPath)  => {
         let dict = {};
@@ -235,7 +365,6 @@ const DataUtils = () => {
         
         return result;
     }
-
     return {
         getListVNSentence: getListVNSentence,
         getListENSentence: getListENSentence,
