@@ -71,6 +71,9 @@ const handleTargetArr = (targetArr, sentenceId, item) => {
         }
     }
 }
+
+
+
 const DataUtils = () => {
     const getListVNSentence = () => {
         return axios.get('data/vn.json')
@@ -167,11 +170,80 @@ const DataUtils = () => {
         .then(res => {})
         .catch(err => console.log(err));
     }
+
+    const getStatsDict = (jsonPath)  => {
+        let dict = {};
+        let totalCount = 0;
+        return axios.get(jsonPath)
+        .then(res => {
+            res.data.map(item => {
+                
+                dict[item.word] = dict[item.word] ? dict[item.word] + 1 : 1;
+                totalCount = totalCount + 1;
+            });
+    
+            var result = {dict: dict, totalCount: totalCount};
+            return result;
+    
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
+
+
+    const getStatsData = (tmpData)  => {
+        let result =[];
+        for (var key in tmpData.dict)
+            
+            result.push(statHandle(key, tmpData.dict[key], tmpData.totalCount));
+        //[{word, count ,percentage , -log(n/N)}]
+        return result;
+    }
+
+    const statHandle = (word, count, totalCount) =>{
+        let percentage = count / totalCount;
+        let logPercent = -Math.log(percentage);
+        return {word: word, 
+            count: count, 
+            percentage: percentage, 
+            logPercent: logPercent};
+    }
+
+    const searchStats = (key, sortBy, statsData) =>{
+        let lowercasedKey = key.toLowerCase();
+        let result = [];
+        for (let item of statsData){
+            if (item.word.toLowerCase().includes(lowercasedKey))
+            {
+                result.push(item);
+            }
+        }
+
+        if (sortBy === "alphabet")
+            result.sort(function(a, b){
+                if (a.word > b.word)
+                    return 1;
+                if (a.word < b.word)
+                    return -1;
+                return 0;
+            })
+        
+        if (sortBy === "popularity")
+            result.sort(function(a, b){ return a.count - b.count});
+        
+        return result;
+    }
+
     return {
         getListVNSentence: getListVNSentence,
         getListENSentence: getListENSentence,
         searchByMatch: searchByMatch,
-        searchByPhrase: searchByPhrase
+        searchByPhrase: searchByPhrase,
+        getStatsData: getStatsData,
+        getStatsDict: getStatsDict,
+        searchStats: searchStats
     }
 }
 export default DataUtils();
