@@ -29,11 +29,10 @@ const SearchPage = ({rowsEN, rowsVN}) => {
         }
     }
     return (
-        <div>
-            <Header></Header>
+        <div style={{position: 'relative', minHeight: 'calc(100vh - 150px)'}}>
             <SearchForm getSearchPayload={getSearchPayload}></SearchForm>
             <TableSearch rowsSrc={rowsSrc} rowsTar={rowsTar} typeSearch={typeSearch}></TableSearch>
-            <Footer></Footer>
+            <Footer key={rowsSrc.length}></Footer>
         </div>
     );
 }

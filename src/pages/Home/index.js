@@ -5,7 +5,6 @@ import Footer from "../../components/footer";
 const HomePage = ({rowsEN, rowsVN}) => {
     return (
         <div>
-            <Header></Header>
             <StickyHeadTable rowsVN={rowsVN} rowsEN={rowsEN}></StickyHeadTable>
             <Footer></Footer>
         </div>

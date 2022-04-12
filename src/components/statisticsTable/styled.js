@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-export const StatsTableContainer = styled.span`
-    display: inline-block;
-    width: 70%;
+export const StatsTableContainer = styled.div`
+    width: 85%;
 `

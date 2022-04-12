@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-export const StatsFormContainer = styled.span`
-    display: inline-block;
-    width: 20%;
+export const StatsFormContainer = styled.div`
+    width: 15%;
 `

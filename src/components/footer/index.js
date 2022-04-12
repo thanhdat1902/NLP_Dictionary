@@ -3,19 +3,19 @@ import { FooterContainer } from "./styled";
 const Footer = () => {
   return (
     <FooterContainer>
-      <p class = "first">Paracor Website</p>
-      <div class = "part1">
-        <div class = "left">
+      <p className = "first">Paracor Website</p>
+      <div className = "part1">
+        <div className = "left">
           <h5>Contact</h5>
         </div>
-        <div class="middle">
+        <div className="middle">
           <h5>About Us</h5>
         </div>
-        <div class="right">
+        <div className="right">
           <h5>Partner</h5>
         </div>
       </div>
-      <p class="second"> Copyright(C)
+      <p className="second"> Copyright(C)
         <a href="http://www.clc.hcmus.edu.vn/" > CLC </a>
         2020 Version 0.1.
       </p>

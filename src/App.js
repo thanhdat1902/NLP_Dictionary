@@ -7,6 +7,7 @@ import PageNotFound from "./pages/NotFound";
 import {useEffect, useState} from 'react';
 import DataUtils from './utils/utils.js';
 import StatisticsPage from "./pages/Statistics";
+import Header from "./components/header";
 function App() {
   const [rowsVN, setRowsVN] = useState([]);
   const [rowsEN, setRowsEN] = useState([]);
@@ -33,6 +34,7 @@ function App() {
 }, []);
   return (
     <>
+      <Header></Header>
       <Routes>
         <Route exact path="/" element={<HomePage rowsVN={rowsVN} rowsEN={rowsEN}/>} />
         <Route path="/search" element={<SearchPage rowsVN={rowsVN} rowsEN={rowsEN}/>} />

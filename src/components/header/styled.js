@@ -31,6 +31,10 @@ export const HeaderContainer = styled.div`
                 background-color: #ffffff;
                 color: #0f223d;
             }
+            &.active a{
+                background-color: #ffffff;
+                color: #0f223d;
+            }
         }
     }
 `
